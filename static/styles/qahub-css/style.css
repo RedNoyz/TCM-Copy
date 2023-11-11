@@ -1,0 +1,201 @@
+@media screen and (max-width: 1680px) {
+
+  body, input, select, textarea {
+    font-size: 11pt;
+  }
+
+}
+
+@media screen and (max-width: 480px) {
+
+  body, input, select, textarea {
+    font-size: 10pt;
+    line-height: 1.75;
+  }
+
+}
+
+@media screen and (max-width: 480px) {
+
+  h1 {
+    font-size: 1.65em;
+  }
+
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body{
+ background-color: #494949;
+ margin: 0;
+ font-family: 'Raleway', sans-serif;
+ -webkit-font-smoothing: antialiased;
+  color:#212121;
+}
+.wrapper{
+  background-image: url("../images/bg.jpg");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  position: relative;
+  height: 80%;
+  clear:both;
+  margin: 100 auto 75px auto;
+  width: 100%;
+  overflow: auto;
+}
+
+header{
+  position: static;
+  top: 0;
+  width: 100%;
+}
+
+header .top{
+  
+  background: #5c1397;
+  height: 100px;
+  border-top: 20px solid #5c1397;
+  border-bottom: 30px solid #5c1397;
+}
+
+header .top input{
+  background-color: #ffffff;
+  border: white;
+  border-radius: 5px;
+  color: rgb(0, 0, 0);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  margin: 0 20px 20px 20px; 
+}
+
+header .top input:hover{
+  background-color: #058d10;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+header .top input:active {
+  background-color: #3e8e41;
+  transform: translateY(4px);
+}
+
+header .top .title {
+  width: 700px;
+  margin: 38px auto 0 auto; 
+}
+
+header .title h1 {
+  font-size:24px;
+  color:#FFF;
+  font-weight:500;
+  text-align: center;
+}
+
+.btn {
+  background-color: #c00606;
+  border: white;
+  border-radius: 5px;
+  color: rgb(253, 253, 253);
+  padding: 15px 325px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 2px 2px;
+  cursor: pointer;
+  margin: 10px 0px 10px 0px; 
+}
+
+.btn:hover{
+  background-color: #830505;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.btn:active{
+  transform: translateY(4px);
+}
+
+.form-label{
+  font-size:30px;
+  font-weight:700;
+  text-align:center;
+}
+.content{
+  position: relative; top: -40px;
+  margin: -80px auto 100px;
+  padding-bottom: 20px;
+  top: 100px;
+}
+
+.card{
+  position: relative;
+  background: #fff;
+  padding:50px;
+  width: 700px;
+  margin: 5px auto 0 auto;
+  box-shadow: 0 4px 6px rgba(100,100,100,.1);
+  border-radius: 5px;
+  
+}
+
+.card h2 {
+  font-size:21px;
+  font-weight:500;
+}
+
+.card h1 {
+  text-align: center;
+}
+
+.card h2 a {
+  color:#CC0000;
+  text-decoration:none;
+}
+
+.card .text {
+  color:#212121;
+  margin-top:20px;
+  font-size:15px;
+  line-height:22px;
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #5c1397;
+  color: white;
+  text-align: center;
+}
+
+.card input[type=text], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.card input[type=submit] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.card input[type=submit]:hover {
+  background-color: #45a049;
+}
