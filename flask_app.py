@@ -202,6 +202,9 @@ def create_project():
                                  form=form,
                                  user=user.username)
 
+@app.route(rule='/socials')
+def socials():
+    return flask.render_template(template_name_or_list='socials_page.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

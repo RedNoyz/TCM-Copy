@@ -10,7 +10,14 @@
 
 </head>
 <body>
-    <p style="color: aliceblue;">{{ user }}</p>
+
+    <header>
+        <div class="top">
+            <a href="{{ url_for('home_page') }}"><input type="button" value="Home Page"></a>
+            <p style="color: aliceblue;">{{ user }}</p>
+        </div>
+    </header>
+
     <div class="wrapper">
         <div class="wrapper">
                 <div class="content">
