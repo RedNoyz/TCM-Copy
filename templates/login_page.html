@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/qahub-css/style.css') }}" />
+    <title>QA Hub</title>
+    <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
+
+</head>
+<body>
+    <header>
+        <div class="top">
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <div class="wrapper">
+                <div class="content">
+                    <div class="card">
+                        <form method="POST">
+
+                            {% for message in get_flashed_messages() %}
+	
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+
+                            {% endfor %}
+
+                            {{ form.hidden_tag() }}
+                    
+                            {{ form.username.label(class="form-label") }}
+                    
+                            {{ form.username(class="form-control") }}
+                            <br/>
+                    
+                            {{ form.password.label(class="form-label") }}
+                    
+                            {{ form.password(class="form-control") }}
+                            <br/>
+                    
+                    
+                            {{ form.submit(class="btn btn-secondary") }}
+                            <a href="{{ url_for('home_page') }}" class="btn btn-secondary">Cancel</a>
+                        </form>
+                    </div>
+                    {{ ckeditor.load() }}
+ 	                {{ ckeditor.config(name='body') }}
+                </div>
+        </div>
+
+    <footer>
+        <p>© Copyright {{ year }}. Built by RedNoyz.</p>
+    </footer>
+</body>
+</html>
