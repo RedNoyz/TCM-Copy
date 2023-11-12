@@ -60,8 +60,8 @@ login_manager.login_view = 'login'
 bcrypt = Bcrypt(app)
 
 @login_manager.user_loader
-def load_user(user_id):
-	return Users.query.get(int(user_id))
+def load_user(id):
+	return Users.query.get(int(id))
 
 copyright_year = time.strftime("%Y")
 
@@ -78,7 +78,7 @@ class CreateProjectForm(FlaskForm):
     project_name = StringField("Create New Project", validators=[DataRequired()])
     submit = SubmitField("Create")
 
-# ---------------------------------- LOGIN AND SIGNUP CLASS ------------------------------------- #
+# ---------------------------------- LOGIN AND SIGNUP CLASSES ----------------------------------- #
 class CreateNewUserForm(FlaskForm):
     username = StringField(label="Username", validators=[DataRequired()])
     first_name = StringField(label="First Name", validators=[DataRequired()])
@@ -107,8 +107,10 @@ class Users(db.Model, UserMixin):
 # ---------------------------------------- HOME PAGE -------------------------------------------- #
 @app.route('/')
 def home_page():
+    user = current_user
     return flask.render_template('home_page.html',
-                                 year=copyright_year
+                                 year=copyright_year,
+                                 user=user.username
                                  )
 
 # --------------------------------------- LOGIN PAGE -------------------------------------------- #
@@ -162,25 +164,31 @@ def sign_up():
 @app.route(rule='/projects')
 @login_required
 def projects():
+    user = current_user
     project_list = Projects.query.order_by(Projects.id)
+    print(user.username)
     return flask.render_template(template_name_or_list='projects.html',
                                  year=copyright_year,
-                                 project_list=project_list
+                                 project_list=project_list,
+                                 user=user.username
                                  )
 
 # -------------------------------- SELECTED PROJECT PAGE ---------------------------------------- #
 @app.route('/projects/project/<int:id>')
 @login_required
 def project(id):
+    user = current_user
     project = Projects.query.order_by(Projects.id)
     return flask.render_template(template_name_or_list='project_page.html',
                                  project=project,
-                                 id=id)
+                                 id=id,
+                                 user=user.username)
 
 # ---------------------------------- CREATE PROJECT PAGE ---------------------------------------- #
 @app.route(rule='/projects/create-project', methods=['GET', 'POST'])
 @login_required
 def create_project():
+    user = current_user
     form = CreateProjectForm()
     form.project_name.data = "Insert Project Name"
     if request.method == 'POST':
@@ -191,7 +199,8 @@ def create_project():
         return redirect('/projects')
     return flask.render_template(template_name_or_list='create_project.html',
                                  year=copyright_year,
-                                 form=form)
+                                 form=form,
+                                 user=user.username)
 
 
 if __name__ == "__main__":
