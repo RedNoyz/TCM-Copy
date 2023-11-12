@@ -14,21 +14,23 @@ from wtforms import PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired
 from flask_ckeditor import CKEditor
 from flask_ckeditor import CKEditorField
-from werkzeug.security import generate_password_hash, check_password_hash 
 import os
 
 
-app = Flask(__name__)
-ckeditor = CKEditor(app)
+app = Flask(import_name=__name__)
+ckeditor = CKEditor(app=app)
 
 tunnel = sshtunnel.SSHTunnelForwarder(
-    ('ssh.eu.pythonanywhere.com'), ssh_username=os.getenv("qa_hub_username"), ssh_password=os.getenv("qa_hub_password"), remote_bind_address=('rednoyzdev.mysql.eu.pythonanywhere-services.com', 3306)
+    ssh_address_or_host=('ssh.eu.pythonanywhere.com'), 
+    ssh_username=os.getenv(key="qa_hub_username"), 
+    ssh_password=os.getenv(key="qa_hub_password"), 
+    remote_bind_address=('rednoyzdev.mysql.eu.pythonanywhere-services.com', 3306)
 )
 tunnel.start()
 # Add database From local
 SQLALCHEMY_DATABASE_URI = "mysql://{username}:{password}@{hostname}:{port}/{databasename}".format(
-    username=os.getenv("qa_hub_username"),
-    password=os.getenv("qa_hub_password"),
+    username=os.getenv(key="qa_hub_username"),
+    password=os.getenv(key="qa_hub_password"),
     hostname="127.0.0.1",
     port=tunnel.local_bind_port,
     databasename="rednoyzdev$qa-hub",
@@ -85,12 +87,12 @@ class CreateNewUserForm(FlaskForm):
     last_name = StringField(label="Last Name", validators=[DataRequired()])
     email = StringField(label="Email", validators=[DataRequired()])
     password = PasswordField(label="Password", validators=[DataRequired()])
-    submit = SubmitField("Create")
+    submit = SubmitField(label="Create")
 
 class LoginExistingUserForm(FlaskForm):
     username = StringField(label="Username", validators=[DataRequired()])
     password = PasswordField(label="Password", validators=[DataRequired()])
-    submit = SubmitField("Login")
+    submit = SubmitField(label="Login")
 
 # -------------------------------------- USERS CLASS -------------------------------------------- #
 class Users(db.Model, UserMixin):
@@ -105,12 +107,14 @@ class Users(db.Model, UserMixin):
 
 
 # ---------------------------------------- HOME PAGE -------------------------------------------- #
-@app.route('/')
+@app.route(rule='/')
 def home_page():
-    user = current_user
-    return flask.render_template('home_page.html',
+    user = 'Not Logged In'
+    if current_user.is_authenticated:
+        user = current_user.username
+    return flask.render_template(template_name_or_list='home_page.html',
                                  year=copyright_year,
-                                 user=user.username
+                                 user=user
                                  )
 
 # --------------------------------------- LOGIN PAGE -------------------------------------------- #
@@ -120,22 +124,17 @@ def login():
     if form.validate_on_submit():
         user = Users.query.filter_by(username=form.username.data).first()
         if user:
-            # Check the hash
-            if bcrypt.check_password_hash(user.password, form.password.data):
-                login_user(user)
-                flash("Login Succesfull!!")
-                print("login")
-                return redirect(url_for('projects'))
+            if bcrypt.check_password_hash(pw_hash=user.password, 
+                                          password=form.password.data):
+                login_user(user=user)
+                flash(message="Login Succesfull!!")
+
+                return redirect(location=url_for(endpoint='projects'))
             
             else:
-                flash("Wrong Password - Try Again!")
-                print("fail pass")
-                print("Stored Hashed Password:", user.password)
-                print("Entered Password:", form.password.data)
-                print("Password Check Result:", bcrypt.check_password_hash(user.password, form.password.data))
+                flash(message="Wrong Password - Try Again!")
         else:
-            flash("That User Doesn't Exist! Try Again...")
-            print("fail user")
+            flash(message="That User Doesn't Exist! Try Again...")
 
     return flask.render_template(template_name_or_list='login_page.html',
                                  form=form)
@@ -145,13 +144,16 @@ def login():
 def sign_up():
     form = CreateNewUserForm()
     if form.validate_on_submit():
-			# Hash the password!!!
-        hashed_pw = bcrypt.generate_password_hash(password=form.password.data).decode('utf-8')
-        user = Users(username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data, email=form.email.data, password=hashed_pw)
+        hashed_pw = bcrypt.generate_password_hash(password=form.password.data).decode(encoding='utf-8')
+        user = Users(username=form.username.data,
+                     first_name=form.first_name.data, 
+                     last_name=form.last_name.data, 
+                     email=form.email.data, 
+                     password=hashed_pw)
         db.session.add(instance=user)
         db.session.commit()
         flash(message="User Added Successfully!")
-        return redirect('/login')
+        return redirect(location='/login')
     else:
         flash(message="Please make sure to complete all the fields!")
     return flask.render_template(template_name_or_list='signup_page.html',
@@ -164,33 +166,31 @@ def sign_up():
 @app.route(rule='/projects')
 @login_required
 def projects():
-    user = current_user
+    user = current_user.username
     project_list = Projects.query.order_by(Projects.id)
-    print(user.username)
     return flask.render_template(template_name_or_list='projects.html',
                                  year=copyright_year,
                                  project_list=project_list,
-                                 user=user.username
+                                 user=user
                                  )
 
 # -------------------------------- SELECTED PROJECT PAGE ---------------------------------------- #
-@app.route('/projects/project/<int:id>')
+@app.route(rule='/projects/project/<int:id>')
 @login_required
 def project(id):
-    user = current_user
+    user = current_user.username
     project = Projects.query.order_by(Projects.id)
     return flask.render_template(template_name_or_list='project_page.html',
                                  project=project,
                                  id=id,
-                                 user=user.username)
+                                 user=user)
 
 # ---------------------------------- CREATE PROJECT PAGE ---------------------------------------- #
 @app.route(rule='/projects/create-project', methods=['GET', 'POST'])
 @login_required
 def create_project():
-    user = current_user
+    user = current_user.username
     form = CreateProjectForm()
-    form.project_name.data = "Insert Project Name"
     if request.method == 'POST':
         if form.validate_on_submit():
             project = Projects(project_name=form.project_name.data)
@@ -200,8 +200,9 @@ def create_project():
     return flask.render_template(template_name_or_list='create_project.html',
                                  year=copyright_year,
                                  form=form,
-                                 user=user.username)
+                                 user=user)
 
+# ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')
 def socials():
     return flask.render_template(template_name_or_list='socials_page.html')
