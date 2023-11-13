@@ -10,8 +10,27 @@
 
 </head>
 <body>
-    <h1>WIP!! Coming Soon™</h1>
-    <br>
+    <header>
+        <div class="top">
+            <a href="{{ url_for('home_page') }}"><input type="button" value="Home Page"></a>
+            <a href="{{ url_for('create_suite', project_id=id) }}"><input type="button" value="Create Test Suite"></a>
+            <p style="color: aliceblue;">{{ user }}</p>
+        </div>
+    </header>
+    <div class="wrapper">
+        {% for item in test_suites_list %}
+            <div class="content">
+                <div class="card">
+                    <h2>{{ item['test_suites_name'] }}</h2>
+                    <h3>{{ item['test_suites_description'] }}</h3>
+
+                    <hr>
+                </div>
+            </div>
+            {{ ckeditor.load() }}
+            {{ ckeditor.config(name='body') }}
+            {% endfor %}
+    </div>
 
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>

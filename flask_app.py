@@ -105,6 +105,19 @@ class Users(db.Model, UserMixin):
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     user_is_admin = db.Column(db.Boolean(), nullable=False, default=False)
 
+# ------------------------------------- TEST SUITES CLASS --------------------------------------- #
+class TestSuites(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    test_suites_name = db.Column(db.String(), nullable=False)
+    test_suites_description = db.Column(db.String(), nullable=False)
+    project_id = db.Column(db.Integer, nullable=False)
+    test_suites_archived = db.Column(db.Boolean, nullable=False, default=False)
+    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+
+class CreateNewTestSuite(FlaskForm):
+    test_suites_name = StringField(label="Test Suite Name", validators=[DataRequired()])
+    test_suites_description = StringField(label="Test Suite Description", validators=[DataRequired()])
+    submit = SubmitField(label="Create Test Suite")
 
 # ---------------------------------------- HOME PAGE -------------------------------------------- #
 @app.route(rule='/')
@@ -160,8 +173,6 @@ def sign_up():
                                  form=form,
                                  year=copyright_year)
 
-
-
 # -------------------------------------- PROJECTS PAGE ------------------------------------------ #
 @app.route(rule='/projects')
 @login_required
@@ -175,14 +186,15 @@ def projects():
                                  )
 
 # -------------------------------- SELECTED PROJECT PAGE ---------------------------------------- #
-@app.route(rule='/projects/project/<int:id>')
+@app.route(rule='/projects/project/<int:project_id>')
 @login_required
-def project(id):
+def project(project_id):
     user = current_user.username
-    project = Projects.query.order_by(Projects.id)
+    project = Projects.query.filter_by(id=project_id).one()
+
     return flask.render_template(template_name_or_list='project_page.html',
                                  project=project,
-                                 id=id,
+                                 id=project_id,
                                  user=user)
 
 # ---------------------------------- CREATE PROJECT PAGE ---------------------------------------- #
@@ -201,6 +213,45 @@ def create_project():
                                  year=copyright_year,
                                  form=form,
                                  user=user)
+
+# ------------------------------------ TEST SUITES PAGE ----------------------------------------- #
+@app.route(rule='/projects/project/<int:project_id>/test-suites')
+@login_required
+def test_suites(project_id):
+    user = current_user.username
+    project = Projects.query.filter_by(id=project_id).one()
+
+    test_suites_list = TestSuites.query.filter_by(project_id=project_id).all()
+
+    return flask.render_template(template_name_or_list='test_suites.html',
+                                 project=project,
+                                 id=project_id,
+                                 user=user,
+                                 test_suites_list=test_suites_list)
+
+# ---------------------------------- CREATE SUITE PAGE ------------------------------------------ #
+@app.route(rule='/projects/project/<int:project_id>/test-suites/create-suite', methods=['GET', 'POST'])
+@login_required
+def create_suite(project_id):
+    user = current_user.username
+    project = Projects.query.filter_by(id=project_id).one()
+    form = CreateNewTestSuite()
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            test_suite = TestSuites(test_suites_name=form.test_suites_name.data,
+                                    test_suites_description=form.test_suites_description.data,
+                                    project_id=project_id)
+            db.session.add(test_suite)
+            db.session.commit()
+        return redirect(f'/projects/project/{project_id}/test-suites')
+
+    return flask.render_template(template_name_or_list='create_test_suite.html',
+                                 project=project,
+                                 id=project_id,
+                                 user=user,
+                                 form=form,
+                                 )
 
 # ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')

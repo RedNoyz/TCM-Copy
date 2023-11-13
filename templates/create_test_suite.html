@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/qahub-css/style.css') }}" />
+    <title>QA Hub</title>
+    <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
+
+</head>
+<body>
+
+    <header>
+        <div class="top">
+            <a href="{{ url_for('home_page') }}"><input type="button" value="Home Page"></a>
+            <p style="color: aliceblue;">{{ user }}</p>
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <div class="wrapper">
+                <div class="content">
+                    <div class="card">
+                        <form method="POST">
+                            {{ form.hidden_tag() }}
+                    
+                            {{ form.test_suites_name.label(class="form-label") }}
+                    
+                            {{ form.test_suites_name(class="form-control") }}
+                            <br/>
+
+                            {{ form.test_suites_description.label(class="form-label") }}
+                    
+                            {{ form.test_suites_description(class="form-control") }}
+                            <br/>
+                            
+                            {{ form.submit(class="btn btn-secondary", onclick="location.href = {{ url_for('test_suites', project_id=id) }}" ) }}
+                            <a href="{{ url_for('test_suites', project_id=id) }}" class="btn btn-secondary">Cancel</a>
+                        </form>
+                    </div>
+                    {{ ckeditor.load() }}
+ 	                {{ ckeditor.config(name='body') }}
+                </div>
+        </div>
+    <footer>
+        <p>© Copyright {{ year }}. Built by RedNoyz.</p>
+    </footer>
+</body>
+</html>

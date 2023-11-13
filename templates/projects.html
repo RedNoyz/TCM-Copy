@@ -23,6 +23,7 @@
             <div class="content">
                 <div class="card">
                     <h2>{{ item['project_name'] }}</h2>
+                    <a href="{{ url_for('project', project_id=item['id']) }}">{{ item['project_name'] }}</a>
                     <hr>
                 </div>
             </div>

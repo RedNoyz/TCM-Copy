@@ -13,12 +13,12 @@
     <header>
         <div class="top">
             <a href="{{ url_for('home_page') }}"><input type="button" value="Home Page"></a>
+            <a href="{{ url_for('test_suites', project_id=id) }}"><input type="button" value="Test Suites"></a>
             <p style="color: aliceblue;">{{ user }}</p>
         </div>
     </header>
-    <h1>WIP!! Coming Soon™</h1>
+    <h1>{{ project['project_name'] }}</h1>
     <br>
-    <a href="{{  url_for('project')  }}">{{  project_list[id]['project_name']  }}</a>
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
     </footer>
