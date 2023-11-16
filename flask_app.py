@@ -173,6 +173,14 @@ def sign_up():
                                  form=form,
                                  year=copyright_year)
 
+# ----------------------------------------- LOGOUT ---------------------------------------------- #
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+	logout_user()
+	flash("You Have Been Logged Out!  Thanks For Stopping By...")
+	return redirect(url_for('home_page'))
+
 # -------------------------------------- PROJECTS PAGE ------------------------------------------ #
 @app.route(rule='/projects')
 @login_required
