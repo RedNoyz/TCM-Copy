@@ -150,7 +150,8 @@ def login():
             flash(message="That User Doesn't Exist! Try Again...")
 
     return flask.render_template(template_name_or_list='login_page.html',
-                                 form=form)
+                                 form=form,
+                                 year=copyright_year)
 
 # -------------------------------------- SIGN-UP PAGE ------------------------------------------- #
 @app.route(rule='/sign-up', methods=['GET', 'POST'])
