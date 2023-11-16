@@ -28,6 +28,10 @@ html {
 }
 
 body{
+ background-image: url("../images/bg.jpg");
+ background-attachment: fixed;
+ background-repeat: no-repeat;
+ background-size: 100%;
  background-color: #494949;
  margin: 0;
  font-family: 'Raleway', sans-serif;
@@ -35,10 +39,7 @@ body{
   color:#212121;
 }
 .wrapper{
-  background-image: url("../images/bg.jpg");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: 100%;
+
   position: relative;
   height: 80%;
   clear:both;
@@ -54,7 +55,6 @@ header{
 }
 
 header .top{
-  
   background: #5c1397;
   height: 100px;
   border-top: 20px solid #5c1397;
@@ -103,7 +103,7 @@ header .title h1 {
   border: white;
   border-radius: 5px;
   color: rgb(253, 253, 253);
-  padding: 15px 325px;
+  padding: 15px 275px;
   text-align: center;
   text-decoration: none;
   display: inline-block;

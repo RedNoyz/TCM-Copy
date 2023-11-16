@@ -10,22 +10,21 @@
 
 </head>
 <body>
-    <header>
-        <div class="top">
-            <a href="{{  url_for('projects')  }}"><input type="button" value="Projects"></a>
-            <a href="{{  url_for('login')  }}"><input type="button" value="Login"></a>
-            <a href="{{  url_for('sign_up')  }}"><input type="button" value="Sign Up"></a>
-            <a href="{{ url_for('logout') }}"><input type="button" value="Logout"></a>
-            <a href="{{  url_for('socials')  }}"><input type="button" value="Socials"></a>
-            <p style="color: aliceblue;">{{ user }}</p>
-        </div>
-    </header>
+    {% extends 'base.html' %}
 
-    <h1>WIP!! Coming Soon™</h1>
-    <br>
+    {% block content %}
 
+    <div class="wrapper">
+            <div class="content">
+                <div class="card">
+                    <h1>WIP!! Coming Soon™</h1>
+                </div>
+            </div>
+    </div>
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
     </footer>
+
+    {% endblock %}
 </body>
 </html>

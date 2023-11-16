@@ -1,0 +1,53 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('home_page') }}">QA Hub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        
+        {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('projects')}}">Projects</a>
+          </li>   
+          {% if '/test-suites' in request.path %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('create_suite', project_id=id) }}">Create Test Suite</a>
+          </li>
+          {% elif '/project/' in request.path %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('test_suites', project_id=id) }}">Test Suites</a>
+          </li>
+          {% elif request.path.startswith('/projects') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('create_project')}}">Create Project</a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
+          </li>
+          <br>
+          <li class="nav-item">
+            <a class="nav-link" href="">{{ user }}</a>
+          </li>
+
+          <!-- {% if current_user.id == 1 %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('admin')}}">Admin</a>
+          </li>
+          {% endif %} -->
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('sign_up')}}">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login')}}">Login</a>
+          </li>
+        {% endif %}
+      </ul>
+      </form>
+    </div>
+  </div>
+</nav>

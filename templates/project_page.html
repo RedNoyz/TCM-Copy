@@ -10,17 +10,25 @@
 
 </head>
 <body>
-    <header>
-        <div class="top">
-            <a href="{{ url_for('home_page') }}"><input type="button" value="Home Page"></a>
-            <a href="{{ url_for('test_suites', project_id=id) }}"><input type="button" value="Test Suites"></a>
-            <p style="color: aliceblue;">{{ user }}</p>
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+    <div class="wrapper">
+        <div class="content">
+            <div class="card">
+                <a href="{{ url_for('test_suites', project_id=id) }}"><input type="button" value="Test Suites"></a>
+                <br>
+                <h1>{{ project['project_name'] }}</h1>
+                <br>
+            </div>
         </div>
-    </header>
-    <h1>{{ project['project_name'] }}</h1>
-    <br>
+    </div>
+
+
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
     </footer>
+    {% endblock %}
 </body>
 </html>

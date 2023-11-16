@@ -10,13 +10,10 @@
 
 </head>
 <body>
+    {% extends 'base.html' %}
 
-    <header>
-        <div class="top">
-            <a href="{{ url_for('home_page') }}"><input type="button" value="Home Page"></a>
-            <p style="color: aliceblue;">{{ user }}</p>
-        </div>
-    </header>
+    {% block content %}
+
 
     <div class="wrapper">
         <div class="wrapper">
@@ -38,6 +35,7 @@
  	                {{ ckeditor.config(name='body') }}
                 </div>
         </div>
+    {% endblock %}
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
     </footer>

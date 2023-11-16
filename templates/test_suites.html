@@ -10,14 +10,20 @@
 
 </head>
 <body>
-    <header>
-        <div class="top">
-            <a href="{{ url_for('home_page') }}"><input type="button" value="Home Page"></a>
-            <a href="{{ url_for('create_suite', project_id=id) }}"><input type="button" value="Create Test Suite"></a>
-            <p style="color: aliceblue;">{{ user }}</p>
-        </div>
-    </header>
+    {% extends 'base.html' %}
+
+    {% block content %}
     <div class="wrapper">
+
+            <div class="content">
+                <div class="card">
+                    <a href="{{ url_for('create_suite', project_id=id) }}"><input type="button" value="Create Test Suite"></a>
+                    <br>
+                    <h1>{{ project['project_name'] }}</h1>
+                    <br>
+                </div>
+            </div>
+
         {% for item in test_suites_list %}
             <div class="content">
                 <div class="card">
@@ -31,7 +37,7 @@
             {{ ckeditor.config(name='body') }}
             {% endfor %}
     </div>
-
+    {% endblock %}
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
     </footer>
