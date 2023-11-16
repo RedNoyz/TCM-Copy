@@ -25,13 +25,20 @@
           </li>
           {% endif %}
 
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
-          </li>
           <br>
-          <li class="nav-item">
-            <a class="nav-link" href="">{{ user }}</a>
-          </li>
+          <ul class="nav justify-content-end">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ user }}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ url_for('logout')}}">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+
 
           <!-- {% if current_user.id == 1 %}
           <li class="nav-item">
@@ -47,7 +54,6 @@
           </li>
         {% endif %}
       </ul>
-      </form>
     </div>
   </div>
 </nav>
