@@ -18,6 +18,7 @@
         <a class="btn btn-secondary btn-lg" href="{{ url_for('project', project_id=id) }}">Project Home</a>
         <a class="btn btn-secondary btn-lg" href="">Test Runs</a>
         <a class="btn btn-secondary btn-lg" href="{{ url_for('test_suites', project_id=id) }}">Test Suites</a>
+        <a class="btn btn-secondary btn-lg" href="">Time Tracking</a>
     </div>
 
     {% for message in get_flashed_messages() %}

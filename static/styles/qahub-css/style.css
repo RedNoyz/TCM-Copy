@@ -39,7 +39,6 @@ body{
   color:#212121;
 }
 .wrapper{
-
   position: relative;
   height: 80%;
   clear:both;
@@ -98,7 +97,6 @@ header .title h1 {
   text-align: center;
 }
 
-
 .btn:hover{
   background-color: #c9c8c8;
   color: #000;
@@ -125,7 +123,7 @@ header .title h1 {
   position: relative;
   background: #fff;
   padding:50px;
-  width: 700px;
+  width: 1200px;
   margin: 5px auto 0 auto;
   box-shadow: 0 4px 6px rgba(100,100,100,.1);
   border-radius: 5px;
