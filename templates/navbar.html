@@ -11,19 +11,6 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('projects')}}">Projects</a>
           </li>   
-          {% if '/test-suites' in request.path %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('create_suite', project_id=id) }}">Create Test Suite</a>
-          </li>
-          {% elif '/project/' in request.path %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('test_suites', project_id=id) }}">Test Suites</a>
-          </li>
-          {% elif request.path.startswith('/projects') %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('create_project')}}">Create Project</a>
-          </li>
-          {% endif %}
 
           <br>
           <ul class="nav justify-content-end">
@@ -33,11 +20,19 @@
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#">Profile</a></li>
+
+                {% if current_user.user_is_admin %}
+                <li><a class="dropdown-item" href="{{ url_for('admin')}}">Admin</a></li>
+                {% endif %}
+
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{{ url_for('logout')}}">Logout</a></li>
               </ul>
             </li>
           </ul>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('socials')}}">Socials</a>
+          </li>
 
 
           <!-- {% if current_user.id == 1 %}
@@ -52,6 +47,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('login')}}">Login</a>
           </li>
+
         {% endif %}
       </ul>
     </div>

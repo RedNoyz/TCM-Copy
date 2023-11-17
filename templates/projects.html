@@ -13,12 +13,23 @@
     {% extends 'base.html' %}
 
     {% block content %}
+    <a class="btn btn-secondary btn-lg" href="{{ url_for('create_project') }}">Create New Project</a>
+
+
+    {% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+    {% endfor %}
     
     <div class="wrapper">
         {% for item in project_list %}
             <div class="content">
                 <div class="card">
-                    <h2>{{ item['project_name'] }}</h2>
+                    <!-- <h2>{{ item['project_name'] }}</h2> -->
                     <a href="{{ url_for('project', project_id=item['id']) }}">{{ item['project_name'] }}</a>
                     <hr>
                 </div>

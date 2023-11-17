@@ -14,6 +14,15 @@
 
     {% block content %}
 
+    {% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+    {% endfor %}
+
 
     <div class="wrapper">
         <div class="wrapper">
@@ -27,8 +36,10 @@
                             {{ form.project_name(class="form-control") }}
                             <br/>
                             
-                            {{ form.submit(class="btn btn-secondary", onclick="location.href = {{ url_for('projects') }}" ) }}
-                            <a href="{{ url_for('projects') }}" class="btn btn-secondary">Cancel</a>
+                            {{ form.submit(class="btn btn-secondary btn-lg", onclick="location.href = {{ url_for('projects') }}" ) }}
+                            <div class="d-grid gap-2">
+                            <a href="{{ url_for('projects') }}" class="btn btn-danger btn-lg">Cancel</a>
+                            </div> 
                         </form>
                     </div>
                     {{ ckeditor.load() }}

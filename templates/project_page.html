@@ -14,13 +14,25 @@
 
     {% block content %}
 
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('project', project_id=id) }}">Project Home</a>
+        <a class="btn btn-secondary btn-lg" href="">Test Runs</a>
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('test_suites', project_id=id) }}">Test Suites</a>
+    </div>
+
+    {% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+    {% endfor %}
+
     <div class="wrapper">
         <div class="content">
             <div class="card">
-                <a href="{{ url_for('test_suites', project_id=id) }}"><input type="button" value="Test Suites"></a>
-                <br>
                 <h1>{{ project['project_name'] }}</h1>
-                <br>
             </div>
         </div>
     </div>

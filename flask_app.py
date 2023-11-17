@@ -125,6 +125,7 @@ def home_page():
     user = 'Not Logged In'
     if current_user.is_authenticated:
         user = current_user.username
+        
     return flask.render_template(template_name_or_list='home_page.html',
                                  year=copyright_year,
                                  user=user
@@ -181,6 +182,21 @@ def logout():
 	logout_user()
 	flash("You Have Been Logged Out!  Thanks For Stopping By...")
 	return redirect(url_for('home_page'))
+
+# ---------------------------------------- ADMIN PAGE ------------------------------------------- #
+@app.route('/admin')
+@login_required
+def admin():
+    username = current_user.username
+    if current_user.user_is_admin is True:
+        return flask.render_template("admin.html",
+                                     user=username)
+    else:
+        flash("Sorry you must be the Admin to access the Admin Page...")
+        return flask.redirect(url_for('home_page'))
+
+
+
 
 # -------------------------------------- PROJECTS PAGE ------------------------------------------ #
 @app.route(rule='/projects')
