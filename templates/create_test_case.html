@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/qahub-css/style.css') }}" />
+    <title>QA Hub</title>
+    <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
+
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('project', project_id=project_id) }}">Project Home</a>
+        <a class="btn btn-secondary btn-lg" href="">Test Runs</a>
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('test_suites', project_id=project_id) }}">Test Suites</a>
+        <a class="btn btn-secondary btn-lg" href="">Time Tracking</a>
+    </div>
+
+    {% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+    {% endfor %}
+    
+    <div class="wrapper">
+
+            <div class="content">
+                <div class="card">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                
+                            <div class="form-floating mb-3">
+                                {{ form.test_case_title(class="form-control", id="floatingInput", placeholder="Test Case Title") }}
+                                <label for="floatingInput">Test Case Title</label>
+                            </div>
+                            {{ form.test_case_preconditions.label(class="form-label") }} 
+                            {{ form.test_case_preconditions(class="form-control", id="floatingInput", placeholder="Test Case Preconditions") }}
+                            <br>
+                            {{ form.test_case_body.label(class="form-label") }}
+                            {{ form.test_case_body(class="form-control", id="floatingInput", placeholder="Test Case Description") }}
+                            <br>
+                            {{ form.test_case_feature.label(class="form-label") }}
+                            {{ form.test_case_feature(class="form-control", id="form.test_case_feature") }}
+                        
+                        {{ form.submit(class="btn btn-secondary btn-lg", onclick="location.href = {{ url_for('test_suite_page', project_id=project_id, suite_id=suite_id) }}" ) }}
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('test_suite_page', project_id=project_id, suite_id=suite_id) }}" class="btn btn-danger btn-lg">Cancel</a>
+                        </div> 
+                    </form>
+                </div>
+                {{ ckeditor.load() }}
+                {{ ckeditor.config(name='test_case_preconditions') }}
+                {{ ckeditor.config(name='test_case_feature') }}
+            </div>
+    </div>
+    {% endblock %}
+    <footer>
+        <p>© Copyright {{ year }}. Built by RedNoyz.</p>
+    </footer>
+</body>
+</html>

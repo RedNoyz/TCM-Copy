@@ -32,19 +32,15 @@
                             {{ form.hidden_tag() }}
                     
                             <div class="form-floating mb-3">
-                                {{ form.test_suites_name(class="form-control", id="floatingInput", placeholder="Test Suite Name") }}
-                                <label for="floatingInput">Test Suite Name</label>
+                                {{ form.feature(class="form-control", id="floatingInput", placeholder="Feature Name") }}
+                                <label for="floatingInput">Feature Name</label>
                             </div>
-                            <br/>
-                            <div class="form-floating mb-3">
-                                {{ form.test_suites_description(class="form-control", id="floatingInput", placeholder="Test Suite Description") }}
-                                <label for="floatingInput">Test Suite Description</label>
-                            </div>
-                            <br/>
-                            
-                            {{ form.submit(class="btn btn-secondary", onclick="location.href = {{ url_for('test_suites', project_id=id) }}" ) }}
+
+
+                            <br/>                            
+                            {{ form.submit(class="btn btn-secondary", onclick="location.href = {{ url_for('test_suite_page', project_id=project_id) }}" ) }}
                             <div class="d-grid gap-2">
-                                <a class="btn btn-danger btn-lg" href="{{ url_for('test_suites', project_id=project_id) }}">Cancel</a>
+                                <a class="btn btn-danger btn-lg" href="{{ url_for('test_suites', project_id=project_id, test_suite_id=suite_id) }}">Cancel</a>
                             </div>
                         </form>
                     </div>

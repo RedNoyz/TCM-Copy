@@ -10,7 +10,7 @@ from datetime import datetime
 import sshtunnel
 import mysql.connector
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField
+from wtforms import PasswordField, StringField, SubmitField, SelectField, SelectFieldBase
 from wtforms.validators import DataRequired
 from flask_ckeditor import CKEditor
 from flask_ckeditor import CKEditorField
@@ -119,6 +119,38 @@ class CreateNewTestSuite(FlaskForm):
     test_suites_description = StringField(label="Test Suite Description", validators=[DataRequired()])
     submit = SubmitField(label="Create Test Suite")
 
+# --------------------------------- ---- TEST CASES CLASS --------------------------------------- #
+class TestCases(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    test_case_title = db.Column(db.String(), nullable=False)
+    test_case_body = db.Column(db.String(), nullable=False)
+    test_case_preconditions = db.Column(db.String(), nullable=False)
+    project_id = db.Column(db.Integer, nullable=False)
+    suite_id = db.Column(db.Integer, nullable=False)
+    test_case_author = db.Column(db.Integer, nullable=False)
+    test_case_feature = db.Column(db.String(), nullable=False)
+    test_case_custom_fields = db.Column(db.JSON)
+    test_case_created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    test_case_updated_date = created_date = db.Column(db.DateTime)
+
+class CreateNewTestCase(FlaskForm):
+    test_case_title = StringField(label="Test Case Title", validators=[DataRequired()])
+    test_case_body = CKEditorField(label="Test Case Description", validators=[DataRequired()])
+    test_case_preconditions = CKEditorField(label="Test Case Preconditions", validators=[DataRequired()])
+    test_case_feature = SelectField(label="Select Feature",validators=[DataRequired()])
+    submit = SubmitField(label="Create Test Case")
+
+# --------------------------------- ---- TEST CASES CLASS --------------------------------------- #
+class FeatureList(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    feature = db.Column(db.String(), nullable=False)
+    project_id = db.Column(db.Integer, nullable=False)
+
+class CreateNewFeatureForm(FlaskForm):
+    feature = StringField(label="Feature Name", validators=[DataRequired()])
+    submit = SubmitField(label="Create Feature")
+
+
 # ---------------------------------------- HOME PAGE -------------------------------------------- #
 @app.route(rule='/')
 def home_page():
@@ -219,7 +251,7 @@ def project(project_id):
 
     return flask.render_template(template_name_or_list='project_page.html',
                                  project=project,
-                                 id=project_id,
+                                 project_id=project_id,
                                  user=user)
 
 # ---------------------------------- CREATE PROJECT PAGE ---------------------------------------- #
@@ -250,7 +282,7 @@ def test_suites(project_id):
 
     return flask.render_template(template_name_or_list='test_suites.html',
                                  project=project,
-                                 id=project_id,
+                                 project_id=project_id,
                                  user=user,
                                  test_suites_list=test_suites_list)
 
@@ -273,10 +305,95 @@ def create_suite(project_id):
 
     return flask.render_template(template_name_or_list='create_test_suite.html',
                                  project=project,
-                                 id=project_id,
+                                 project_id=project_id,
                                  user=user,
                                  form=form,
                                  )
+# ---------------------------------- SELECT SUITE PAGE ------------------------------------------ #
+@app.route(rule='/projects/project/<int:project_id>/test-suites/<int:suite_id>')
+@login_required
+def test_suite_page(project_id, suite_id):
+    user = current_user.username
+    suite = TestSuites.query.filter_by(id=suite_id, project_id=project_id).one()
+    loop_counter = 0
+    test_cases_list = TestCases.query.filter_by(suite_id=suite_id).all()
+    features = FeatureList.query.filter_by(project_id=project_id).all()
+    users = Users.query.order_by(Users.id).all()
+
+    features_dic = {}
+    for item in features:
+        features_dic[item.id] = item.feature
+
+    users_dic = {}
+    for item in users:
+        users_dic[item.id] = item.username
+    
+    print(users_dic)
+    print(features_dic)
+    return flask.render_template(template_name_or_list='test_suite_page.html',
+                                 suite_id=suite_id,
+                                 project_id=project_id,
+                                 user=user,
+                                 users=users,
+                                 suite=suite,
+                                 test_cases_list=test_cases_list,
+                                 features=features,
+                                 loop_counter=loop_counter,
+                                 features_dic=features_dic,
+                                 users_dic=users_dic)
+
+# ------------------------------ CREATE TEST CASE PAGE ------------------------------------------ #
+@app.route(rule='/projects/project/<int:project_id>/test-suites/<int:suite_id>/create-test-case', methods=['GET', 'POST'])
+@login_required
+def create_test_case(project_id, suite_id):
+    user = current_user.username    
+    form = CreateNewTestCase()
+    feature_list = FeatureList.query.filter_by(project_id=project_id).all()
+    form.test_case_feature.choices = [("-", "Select Feature")] + [(str(feature.id), feature.feature) for feature in feature_list]
+
+    if request.method == 'POST':
+        if form.test_case_feature.data == "-":
+            flash("Please Select A Feature!!")
+        else:
+            if form.validate_on_submit():
+                print(form.data)
+                test_case = TestCases(test_case_title=form.test_case_title.data,
+                                    test_case_body=form.test_case_body.data,
+                                    test_case_preconditions=form.test_case_preconditions.data,
+                                    test_case_author=current_user.id,
+                                    project_id=project_id,
+                                    suite_id=suite_id,
+                                    test_case_feature=form.test_case_feature.data
+                                    )
+                db.session.add(test_case)
+                db.session.commit()
+                return redirect(f'/projects/project/{project_id}/test-suites/{suite_id}')
+            else:
+                print(form.errors)
+
+    return flask.render_template(template_name_or_list='create_test_case.html',
+                                 project_id=project_id,
+                                 suite_id=suite_id,
+                                 form=form,
+                                 user=user)
+
+# -------------------------------- CREATE FEATURE PAGE ------------------------------------------ #
+@app.route(rule='/projects/project/<int:project_id>/test-suites/create-feature', methods=['GET', 'POST'])
+@login_required
+def create_feature(project_id):
+    form = CreateNewFeatureForm()
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            feature = FeatureList(feature=form.feature.data,
+                                    project_id=project_id)
+            db.session.add(feature)
+            db.session.commit()
+            return redirect(f'/projects/project/{project_id}/test-suites')
+        
+    return flask.render_template(template_name_or_list='create_feature.html',
+                                 project_id=project_id,
+                                 form=form)
 
 # ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')

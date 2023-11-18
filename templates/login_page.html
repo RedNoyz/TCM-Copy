@@ -39,22 +39,17 @@
                             {% endfor %}
 
                             {{ form.hidden_tag() }}
-                            <div class="form-floating mb-3">
-                                <!-- {{ form.username.label(class="form-label") }} -->
-                        
+                            <div class="form-floating mb-3">                        
                                 {{ form.username(class="form-control", id="floatingInput", placeholder="Username") }}
-                                <label for="floatingPassword">Username</label>
+                                <label for="floatingInput">Username</label>
                             </div>
                             <br/>
 
-                            <div class="form-floating">
-                                <!-- {{ form.password.label(class="form-label") }} -->
-                        
+                            <div class="form-floating">                        
                                 {{ form.password(class="form-control", id="floatingPassword", placeholder="Password") }}
                                 <label for="floatingPassword">Password</label>
                             </div>
                             <br/>
-                    
                     
                             {{ form.submit(class="btn btn-secondary") }}
                             <div class="d-grid gap-2">

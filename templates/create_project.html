@@ -31,9 +31,11 @@
                         <form method="POST">
                             {{ form.hidden_tag() }}
                     
-                            {{ form.project_name.label(class="form-label") }}
-                    
-                            {{ form.project_name(class="form-control") }}
+                            <div class="form-floating mb-3">
+                                {{ form.project_name(class="form-control", id="floatingInput", placeholder="Project Name") }}
+                                <label for="floatingInput">Project Name</label>
+                            </div>
+
                             <br/>
                             
                             {{ form.submit(class="btn btn-secondary btn-lg", onclick="location.href = {{ url_for('projects') }}" ) }}
