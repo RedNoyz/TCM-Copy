@@ -24,10 +24,6 @@ jobs:
     - name: Set up environment
       run: echo "FLASK_APP=flask_app.py" >> $GITHUB_ENV
       
-    - name: Set up database
-      run: |
-        flask db upgrade
-
     - name: Run tests
       run: |
         python -m unittest discover -s tests
