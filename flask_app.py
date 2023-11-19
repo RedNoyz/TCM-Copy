@@ -22,8 +22,8 @@ ckeditor = CKEditor(app=app)
 
 tunnel = sshtunnel.SSHTunnelForwarder(
     ssh_address_or_host=('ssh.eu.pythonanywhere.com'), 
-    ssh_username=os.getenv(key="qa_hub_username"), 
-    ssh_password=os.getenv(key="qa_hub_password"), 
+    ssh_username='rednoyzdev',
+    ssh_password='aurLA11!!',
     remote_bind_address=('rednoyzdev.mysql.eu.pythonanywhere-services.com', 3306)
 )
 tunnel.start()
