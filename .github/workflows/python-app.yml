@@ -27,7 +27,3 @@ jobs:
     - name: Run tests
       run: |
         python -m unittest discover -s tests
-
-    - name: Tear down database
-      run: |
-        flask db downgrade
