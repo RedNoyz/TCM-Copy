@@ -29,8 +29,8 @@ tunnel = sshtunnel.SSHTunnelForwarder(
 tunnel.start()
 # Add database From local
 SQLALCHEMY_DATABASE_URI = "mysql://{username}:{password}@{hostname}:{port}/{databasename}".format(
-    username=os.getenv(key="qa_hub_username"),
-    password=os.getenv(key="qa_hub_password"),
+    username='rednoyzdev',
+    password='aurLA11!!',
     hostname="127.0.0.1",
     port=tunnel.local_bind_port,
     databasename="rednoyzdev$qa-hub",
