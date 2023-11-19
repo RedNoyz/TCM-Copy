@@ -70,7 +70,7 @@ copyright_year = time.strftime("%Y")
 # -------------------------------------- PROJECTS CLASS ----------------------------------------- #
 class Projects(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    project_name = db.Column(db.String(), nullable=False)
+    project_name = db.Column(db.String(100), nullable=False)
     project_is_archived = db.Column(db.Boolean(), nullable=False, default=False)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     archived_date = db.Column(db.DateTime, nullable=True)
@@ -97,19 +97,19 @@ class LoginExistingUserForm(FlaskForm):
 # -------------------------------------- USERS CLASS -------------------------------------------- #
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    username = db.Column(db.String(), nullable=False)
-    first_name = db.Column(db.String(), nullable=False)
-    last_name = db.Column(db.String(), nullable=False)
-    email = db.Column(db.String(), nullable=False)
-    password = db.Column(db.String(), nullable=False)
+    username = db.Column(db.String(100), nullable=False)
+    first_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(999), nullable=False)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     user_is_admin = db.Column(db.Boolean(), nullable=False, default=False)
 
 # ------------------------------------- TEST SUITES CLASS --------------------------------------- #
 class TestSuites(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    test_suites_name = db.Column(db.String(), nullable=False)
-    test_suites_description = db.Column(db.String(), nullable=False)
+    test_suites_name = db.Column(db.String(100), nullable=False)
+    test_suites_description = db.Column(db.String(999), nullable=False)
     project_id = db.Column(db.Integer, nullable=False)
     test_suites_archived = db.Column(db.Boolean, nullable=False, default=False)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
@@ -122,13 +122,13 @@ class CreateNewTestSuite(FlaskForm):
 # --------------------------------- ---- TEST CASES CLASS --------------------------------------- #
 class TestCases(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    test_case_title = db.Column(db.String(), nullable=False)
-    test_case_body = db.Column(db.String(), nullable=False)
-    test_case_preconditions = db.Column(db.String(), nullable=False)
+    test_case_title = db.Column(db.String(100), nullable=False)
+    test_case_body = db.Column(db.String(999), nullable=False)
+    test_case_preconditions = db.Column(db.String(999), nullable=False)
     project_id = db.Column(db.Integer, nullable=False)
     suite_id = db.Column(db.Integer, nullable=False)
     test_case_author = db.Column(db.Integer, nullable=False)
-    test_case_feature = db.Column(db.String(), nullable=False)
+    test_case_feature = db.Column(db.Integer, nullable=False)
     test_case_custom_fields = db.Column(db.JSON)
     test_case_created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     test_case_updated_date = created_date = db.Column(db.DateTime)
@@ -143,7 +143,7 @@ class CreateNewTestCase(FlaskForm):
 # --------------------------------- ---- TEST CASES CLASS --------------------------------------- #
 class FeatureList(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    feature = db.Column(db.String(), nullable=False)
+    feature = db.Column(db.String(45), nullable=False)
     project_id = db.Column(db.Integer, nullable=False)
 
 class CreateNewFeatureForm(FlaskForm):
