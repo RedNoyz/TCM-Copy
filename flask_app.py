@@ -16,6 +16,7 @@ from flask_ckeditor import CKEditor
 from flask_ckeditor import CKEditorField
 import os
 
+new_var = ''
 
 app = Flask(import_name=__name__)
 ckeditor = CKEditor(app=app)
