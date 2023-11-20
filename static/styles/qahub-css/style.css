@@ -33,7 +33,7 @@ body{
  background-repeat: no-repeat;
  background-size: 100%;
  background-color: #494949;
- margin: 0;
+ /* margin: 0; */
  font-family: 'Raleway', sans-serif;
  -webkit-font-smoothing: antialiased;
   color:#212121;

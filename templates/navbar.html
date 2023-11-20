@@ -11,14 +11,18 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('projects')}}">Projects</a>
           </li>   
-
           <br>
-          <ul class="nav justify-content-end">
-            <li class="nav-item dropdown">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('socials')}}">Socials</a>
+          </li>
+          </li>
+      </ul>
+          <ul class="navbar-nav me-2">
+            <li class="nav-item dropstart ">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ user }}
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu dropdown-menu-dark">
                 <li><a class="dropdown-item" href="#">Profile</a></li>
 
                 {% if current_user.user_is_admin %}
@@ -27,26 +31,16 @@
 
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{{ url_for('logout')}}">Logout</a></li>
-              </ul>
-            </li>
           </ul>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('socials')}}">Socials</a>
-          </li>
-
-
-          <!-- {% if current_user.id == 1 %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('admin')}}">Admin</a>
-          </li>
-          {% endif %} -->
         {% else %}
-          <li class="nav-item">
+        <ul class="navbar-nav me-auto me-2 mb-lg-0"></ul>
+          <li class="nav-item ml-auto">
             <a class="nav-link" href="{{ url_for('sign_up')}}">Register</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item ml-auto">
             <a class="nav-link" href="{{ url_for('login')}}">Login</a>
           </li>
+        </ul>
 
         {% endif %}
       </ul>

@@ -14,15 +14,16 @@
 
     <title>QA Hub</title>
   </head>
-  <body>
+  <body d-flex flex-column min-vh-100">
   	{% include 'navbar.html' %}
   	<br/>
-  	<div class="container">
+    <div class="container">
+		{% block content %}
+		{% endblock %}
+      	
       <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
     </footer>
-		{% block content %}
-		{% endblock %}
 	</div>
 
     <!-- Optional JavaScript; choose one of the two! -->

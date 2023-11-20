@@ -131,7 +131,7 @@ class TestCases(db.Model):
     test_case_feature = db.Column(db.Integer, nullable=False)
     test_case_custom_fields = db.Column(db.JSON)
     test_case_created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
-    test_case_updated_date = created_date = db.Column(db.DateTime)
+    test_case_updated_date = db.Column(db.DateTime)
 
 class CreateNewTestCase(FlaskForm):
     test_case_title = StringField(label="Test Case Title", validators=[DataRequired()])
