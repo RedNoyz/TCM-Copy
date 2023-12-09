@@ -41,10 +41,7 @@
                     <br>
                     <h1>{{ suite['test_suites_name'] }}</h1>
                 </div>
-                {{ section_list }}
-                {{ test_cases_list }}
-                {{ features_dic }}
-                {{ users_dic }}
+
                 {% for section_item in section_list %}
                 <div class="card" data-section-id="{{ section_item.id }}">
                     <div class="card-header" data-section-id="{{ section_item.id }}">
