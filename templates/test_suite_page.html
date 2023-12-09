@@ -34,39 +34,139 @@
 
             <div class="content">
                 <div class="card">
-                    <a class="btn btn-secondary btn-lg" href="{{ url_for('create_test_case', project_id=project_id, suite_id=suite_id) }}">Create Test Case</a>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <a class="btn btn-secondary btn-lg" href="{{ url_for('create_test_case', project_id=project_id, suite_id=suite_id) }}">Create Test Case</a>
+                        <a class="btn btn-secondary btn-lg" href="{{ url_for('create_section', project_id=project_id, suite_id=suite_id) }}">Create Section</a>
+                    </div>
                     <br>
                     <h1>{{ suite['test_suites_name'] }}</h1>
                 </div>
-                <div class="card">
-                    <table class="table table-striped">
-                    <!-- <table class="table table-dark table-striped"> -->
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Test Case Title</th>
-                            <th scope="col">Feature</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Created On</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in test_cases_list %}
-                            <tr>
-                                <th scope="row">{{ loop.index }}</th>
-                                <td><a href="">{{ item['test_case_title'] }}</a></td>
-                                <td>{{ features_dic[item['test_case_feature']] }}</td>
-                                <td>{{ users_dic[item['test_case_author']] }}</td>
-                                <td>{{ item['test_case_created_date'] }}</td>
-
-                            </tr>
-                            {{ ckeditor.load() }}
-                            {{ ckeditor.config(name='body') }}
-                            {% endfor %}
-                    </tbody>
+                {{ section_list }}
+                {{ test_cases_list }}
+                {{ features_dic }}
+                {{ users_dic }}
+                {% for section_item in section_list %}
+                <div class="card" data-section-id="{{ section_item.id }}">
+                    <div class="card-header" data-section-id="{{ section_item.id }}">
+                        {{ section_item.section_name }}
+                    </div>
+                    <div class="card-body" data-section-id="{{ section_item.id }}">
+                        <table class="table table-striped" data-section-id="{{ section_item.id }}">
+                            <thead>
+                                <tr>
+                                    <th scope="col" data-section-id="{{ section_item.id }}">#</th>
+                                    <th scope="col" data-section-id="{{ section_item.id }}">Test Case Title</th>
+                                    <th scope="col" data-section-id="{{ section_item.id }}">Feature</th>
+                                    <th scope="col" data-section-id="{{ section_item.id }}">Author</th>
+                                    <th scope="col" data-section-id="{{ section_item.id }}">Created On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item_tc in test_cases_list if item_tc['section_id'] == section_item.id %}
+                                <tr class="draggable-test-case" data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">  
+                                    <th scope="row" data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ loop.index }}</th>
+                                    <td><a href="#" data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ item_tc['test_case_title'] }}</a></td>
+                                    <td data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ features_dic[item_tc['test_case_feature']] }}</td>
+                                    <td data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ users_dic[item_tc['test_case_author']] }}</td>
+                                    <td data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ item_tc['test_case_created_date'] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            {% endfor %}
+                {{ ckeditor.load() }}
+                {{ ckeditor.config(name='body') }}
             </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    let dragged;
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function dragStart(event) {
+        dragged = event.target;
+        const testCaseId = dragged.dataset.testCaseId;
+        console.log('dragStart - testCaseId:', testCaseId);
+}
+
+    function drop(event) {
+        event.preventDefault();
+
+        // Find the closest ancestor with class 'draggable-test-case'
+        const targetTestCase = event.target.closest('.draggable-test-case') || event.target;
+
+        // If a valid target is found, proceed with the drop logic
+        if (targetTestCase) {
+            const card = targetTestCase.closest('.card');
+
+            // Check if a valid card is found
+            if (card) {
+                const cardHeader = card.querySelector('.card-header');
+
+                if (cardHeader) {
+                    const targetSectionId = cardHeader.dataset.sectionId;
+
+                    // Handle the drop event, update the section for the testCaseId
+                    const testCaseId = dragged.dataset.testCaseId;
+
+                    // Log relevant information
+                    console.log(`Moved testCaseId ${testCaseId} to section ${targetSectionId}`);
+                            // Perform AJAX request to update the database
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ url_for('test_suite_page', project_id=project_id, suite_id=suite_id) }}",
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({
+                            test_case_id: testCaseId,
+                            target_section_id: targetSectionId
+                        }),
+                        success: function (response) {
+                            if (response.success) {
+                                console.log('Database updated successfully.');
+                                // Add any additional client-side logic if needed
+                                location.reload()
+                            } else {
+                                console.error('Database update failed:', response.error);
+                                // Handle error on the client side
+                            }
+                        },
+                        error: function (error) {
+                            console.error('AJAX error:', error);
+                            // Handle AJAX error on the client side
+                        }
+                    });
+                } else {
+                    console.error('Card header not found.');
+                }
+            } else {
+                console.error('Card not found.');
+            }
+        } else {
+            console.error('Target test case not found.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const draggableTestCases = document.querySelectorAll('.draggable-test-case');
+        draggableTestCases.forEach(testCase => {
+            testCase.addEventListener('dragstart', dragStart);
+            testCase.setAttribute('draggable', 'true');
+        });
+
+        // Add event listener for the 'drop' event on the entire document
+        document.addEventListener('drop', drop);
+
+        // Add event listener for the 'dragover' event on the entire document
+        document.addEventListener('dragover', allowDrop);
+    });
+</script>
+
+<!-- url: "{{ url_for('test_suite_page', project_id=project_id, suite_id=suite_id) }}", -->
     {% endblock %}
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>

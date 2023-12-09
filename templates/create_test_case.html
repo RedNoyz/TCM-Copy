@@ -49,6 +49,9 @@
                             <br>
                             {{ form.test_case_feature.label(class="form-label") }}
                             {{ form.test_case_feature(class="form-control", id="form.test_case_feature") }}
+                            <br>
+                            {{ form.test_section.label(class="form-label") }}
+                            {{ form.test_section(class="form-control", id="form.test_section") }}
                         
                         {{ form.submit(class="btn btn-secondary btn-lg", onclick="location.href = {{ url_for('test_suite_page', project_id=project_id, suite_id=suite_id) }}" ) }}
                         <div class="d-grid gap-2">

@@ -1,20 +1,16 @@
 import flask
-from flask import Flask, redirect, request, url_for, flash
+from flask import Flask, redirect, request, url_for, flash, jsonify
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
-import random
 import time
-import requests
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import sshtunnel
-import mysql.connector
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, SelectField, SelectFieldBase
 from wtforms.validators import DataRequired
 from flask_ckeditor import CKEditor
 from flask_ckeditor import CKEditorField
-import os
 
 
 app = Flask(import_name=__name__)
@@ -132,12 +128,14 @@ class TestCases(db.Model):
     test_case_custom_fields = db.Column(db.JSON)
     test_case_created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     test_case_updated_date = db.Column(db.DateTime)
+    section_id = db.Column(db.Integer)
 
 class CreateNewTestCase(FlaskForm):
     test_case_title = StringField(label="Test Case Title", validators=[DataRequired()])
     test_case_body = CKEditorField(label="Test Case Description", validators=[DataRequired()])
     test_case_preconditions = CKEditorField(label="Test Case Preconditions", validators=[DataRequired()])
     test_case_feature = SelectField(label="Select Feature",validators=[DataRequired()])
+    test_section = SelectField(label="Select Section",validators=[DataRequired()])
     submit = SubmitField(label="Create Test Case")
 
 # --------------------------------- ---- TEST CASES CLASS --------------------------------------- #
@@ -150,6 +148,15 @@ class CreateNewFeatureForm(FlaskForm):
     feature = StringField(label="Feature Name", validators=[DataRequired()])
     submit = SubmitField(label="Create Feature")
 
+class TestSection(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    section_name = db.Column(db.String(100), nullable=False)
+    test_suite_id = db.Column(db.Integer, nullable=False)
+    order_rank = db.Column(db.Integer)
+
+class CreateNewSectionForm(FlaskForm):
+    section_name = StringField(label="Section Name", validators=[DataRequired()])
+    submit = SubmitField(label="Create Section")
 
 # ---------------------------------------- HOME PAGE -------------------------------------------- #
 @app.route(rule='/')
@@ -252,7 +259,8 @@ def project(project_id):
     return flask.render_template(template_name_or_list='project_page.html',
                                  project=project,
                                  project_id=project_id,
-                                 user=user)
+                                 user=user,
+                                 year=copyright_year)
 
 # ---------------------------------- CREATE PROJECT PAGE ---------------------------------------- #
 @app.route(rule='/projects/create-project', methods=['GET', 'POST'])
@@ -310,15 +318,38 @@ def create_suite(project_id):
                                  form=form,
                                  )
 # ---------------------------------- SELECT SUITE PAGE ------------------------------------------ #
-@app.route(rule='/projects/project/<int:project_id>/test-suites/<int:suite_id>')
+@app.route(rule='/projects/project/<int:project_id>/test-suites/<int:suite_id>', methods=['GET', 'POST'])
 @login_required
 def test_suite_page(project_id, suite_id):
+
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+
+            test_case_id = data.get('test_case_id')
+            target_section_id = data.get('target_section_id')
+
+            test_case = TestCases.query.get(test_case_id)
+            print(f"Received test_case_id: {test_case_id}, target_section_id: {target_section_id}")
+            if test_case:
+                test_case.section_id = target_section_id
+                db.session.commit()
+
+                return jsonify({'success': True})
+            else:
+                return jsonify({'success': False, 'error': 'Test case not found'})
+
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return jsonify({'success': False, 'error': str(e)})
+
     user = current_user.username
     suite = TestSuites.query.filter_by(id=suite_id, project_id=project_id).one()
     loop_counter = 0
     test_cases_list = TestCases.query.filter_by(suite_id=suite_id).all()
     features = FeatureList.query.filter_by(project_id=project_id).all()
     users = Users.query.order_by(Users.id).all()
+    section_list = TestSection.query.filter_by(test_suite_id=suite_id).all()
 
     features_dic = {}
     for item in features:
@@ -340,7 +371,9 @@ def test_suite_page(project_id, suite_id):
                                  features=features,
                                  loop_counter=loop_counter,
                                  features_dic=features_dic,
-                                 users_dic=users_dic)
+                                 users_dic=users_dic,
+                                 year=copyright_year,
+                                 section_list=section_list)
 
 # ------------------------------ CREATE TEST CASE PAGE ------------------------------------------ #
 @app.route(rule='/projects/project/<int:project_id>/test-suites/<int:suite_id>/create-test-case', methods=['GET', 'POST'])
@@ -350,6 +383,9 @@ def create_test_case(project_id, suite_id):
     form = CreateNewTestCase()
     feature_list = FeatureList.query.filter_by(project_id=project_id).all()
     form.test_case_feature.choices = [("-", "Select Feature")] + [(str(feature.id), feature.feature) for feature in feature_list]
+
+    section_list = TestSection.query.filter_by(test_suite_id=suite_id).all()
+    form.test_section.choices = [("-", "Select Section")] + [(str(section.id), section.section_name) for section in section_list]
 
     if request.method == 'POST':
         if form.test_case_feature.data == "-":
@@ -363,7 +399,8 @@ def create_test_case(project_id, suite_id):
                                     test_case_author=current_user.id,
                                     project_id=project_id,
                                     suite_id=suite_id,
-                                    test_case_feature=form.test_case_feature.data
+                                    test_case_feature=form.test_case_feature.data,
+                                    section_id=form.test_section.data
                                     )
                 db.session.add(test_case)
                 db.session.commit()
@@ -394,6 +431,30 @@ def create_feature(project_id):
     return flask.render_template(template_name_or_list='create_feature.html',
                                  project_id=project_id,
                                  form=form)
+
+# ------------------------------------ CREATE SECTION ------------------------------------------- #
+@app.route(rule='/projects/project/<int:project_id>/test-suites/<int:suite_id>/create-section', methods=['GET', 'POST'])
+@login_required
+def create_section(project_id, suite_id):
+    user = current_user.username    
+
+    form = CreateNewSectionForm()
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            section = TestSection(section_name=form.section_name.data,
+                              test_suite_id=suite_id)
+            db.session.add(section)
+            db.session.commit()
+            return redirect(f'/projects/project/{project_id}/test-suites/{suite_id}')
+        
+    return flask.render_template(template_name_or_list='create_section.html',
+                                 project_id=project_id,
+                                 suite_id=suite_id,
+                                 form=form,
+                                 user=user)
+
+
 
 # ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')
