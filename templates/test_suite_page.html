@@ -81,9 +81,22 @@
 <script>
     let dragged;
 
+    let scrollSpeed = 100;
+
     function allowDrop(event) {
         event.preventDefault();
+
+         // Check if the mouse is near the top of the window
+    if (event.clientY < 50) {
+        window.scrollBy(0, -scrollSpeed);
     }
+
+    // Check if the mouse is near the bottom of the window
+    if (window.innerHeight - event.clientY < 50) {
+        window.scrollBy(0, scrollSpeed);
+    }
+
+}
 
     function dragStart(event) {
         dragged = event.target;
@@ -148,6 +161,28 @@
         }
     }
 
+    function handleMouseMove(event) {
+    if (dragged) {
+        const scrollThreshold = 20;
+        const mouseY = event.clientY;
+
+        if (mouseY < scrollThreshold) {
+            window.scrollBy(0, -scrollThreshold);
+        } else if (mouseY > window.innerHeight - scrollThreshold) {
+            window.scrollBy(0, scrollThreshold);
+        }
+    }
+}
+
+function handleScroll(event) {
+            if (dragged) {
+                // Prevent default scroll behavior while dragging
+                event.preventDefault();
+                // Add your custom scroll handling logic here
+                window.scrollBy(0, event.deltaY);
+            }
+        }
+
     document.addEventListener('DOMContentLoaded', function () {
         const draggableTestCases = document.querySelectorAll('.draggable-test-case');
         draggableTestCases.forEach(testCase => {
@@ -160,13 +195,14 @@
 
         // Add event listener for the 'dragover' event on the entire document
         document.addEventListener('dragover', allowDrop);
+
+        // Add event listener for the 'wheel' event on the entire document
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('wheel', handleMouseWheel);
     });
 </script>
 
 <!-- url: "{{ url_for('test_suite_page', project_id=project_id, suite_id=suite_id) }}", -->
     {% endblock %}
-    <footer>
-        <p>© Copyright {{ year }}. Built by RedNoyz.</p>
-    </footer>
 </body>
 </html>
