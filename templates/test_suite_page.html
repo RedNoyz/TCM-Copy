@@ -62,7 +62,7 @@
                                 {% for item_tc in test_cases_list if item_tc['section_id'] == section_item.id %}
                                 <tr class="draggable-test-case" data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">  
                                     <th scope="row" data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ loop.index }}</th>
-                                    <td><a href="#" data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ item_tc['test_case_title'] }}</a></td>
+                                    <td><a href="{{ url_for('view_test_case', project_id=project_id, suite_id=suite_id, testcase_id=item_tc.id) }}" data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ item_tc['test_case_title'] }}</a></td>
                                     <td data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ features_dic[item_tc['test_case_feature']] }}</td>
                                     <td data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ users_dic[item_tc['test_case_author']] }}</td>
                                     <td data-test-case-id="{{ item_tc.id }}" draggable="true" ondragstart="dragStart(event)">{{ item_tc['test_case_created_date'] }}</td>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/qahub-css/style.css') }}" />
+    <title>QA Hub</title>
+    <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
+
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('project', project_id=project_id) }}">Project Home</a>
+        <a class="btn btn-secondary btn-lg" href="">Test Runs</a>
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('test_suites', project_id=project_id) }}">Test Suites</a>
+        <a class="btn btn-secondary btn-lg" href="">Time Tracking</a>
+    </div>
+
+    {% for message in get_flashed_messages() %}
+	
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  {{ message }}
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+    {% endfor %}
+    
+    <div class="wrapper">
+
+            <div class="content">
+                <div class="card">
+                    <p>If you see this, you have edit permissions - Functionality WIP</p>
+
+                    <h3>{{ test_case.test_case_title }}</h3>
+                    <br>
+                    <!-- TODO: Add section name here -->
+                    <h2>section</h2> 
+                    <br>
+                    <p>Preconditions</p>
+                    <div class="card-body">
+                        <p>{{ test_case.test_case_preconditions|safe }}</p>
+                    </div>
+                    <br>
+                    <p>Desctiption</p>
+                    <div class="card-body">
+                        <p>{{ test_case.test_case_body|safe }}</p>
+                    </div>
+                    <br>
+                    <div class="float-end">
+                        <p>{{ test_case.test_case_author }}</p>
+                        <p>{{ test_case.test_case_created_date }}</p>
+                    </div>
+         
+                {{ ckeditor.load() }}
+                {{ ckeditor.config(name='body') }}
+            </div>
+    </div>
+
+<!-- url: "{{ url_for('test_suite_page', project_id=project_id, suite_id=suite_id) }}", -->
+    {% endblock %}
+</body>
+</html>

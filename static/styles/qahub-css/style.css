@@ -130,6 +130,12 @@ header .title h1 {
   
 }
 
+.card-body{
+  background: #cfcccc;
+  box-shadow: 0 4px 6px rgba(100,100,100,.1);
+  border-radius: 5px;
+}
+
 .card h2 {
   font-size:21px;
   font-weight:500;

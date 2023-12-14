@@ -100,6 +100,7 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(999), nullable=False)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     user_is_admin = db.Column(db.Boolean(), nullable=False, default=False)
+    role_id = db.Column(db.Integer, nullable=False, default=0)
 
 # ------------------------------------- TEST SUITES CLASS --------------------------------------- #
 class TestSuites(db.Model):
@@ -358,9 +359,7 @@ def test_suite_page(project_id, suite_id):
     users_dic = {}
     for item in users:
         users_dic[item.id] = item.username
-    
-    print(users_dic)
-    print(features_dic)
+
     return flask.render_template(template_name_or_list='test_suite_page.html',
                                  suite_id=suite_id,
                                  project_id=project_id,
@@ -382,14 +381,14 @@ def create_test_case(project_id, suite_id):
     user = current_user.username    
     form = CreateNewTestCase()
     feature_list = FeatureList.query.filter_by(project_id=project_id).all()
-    form.test_case_feature.choices = [("-", "Select Feature")] + [(str(feature.id), feature.feature) for feature in feature_list]
+    form.test_case_feature.choices = [("-", "-")] + [(str(feature.id), feature.feature) for feature in feature_list]
 
     section_list = TestSection.query.filter_by(test_suite_id=suite_id).all()
-    form.test_section.choices = [("-", "Select Section")] + [(str(section.id), section.section_name) for section in section_list]
+    form.test_section.choices = [("-", "-")] + [(str(section.id), section.section_name) for section in section_list]
 
     if request.method == 'POST':
-        if form.test_case_feature.data == "-":
-            flash("Please Select A Feature!!")
+        if (form.test_case_feature.data == "-" or form.test_section.data == "-"):
+            flash("Please Select A Feature and A Section!!")
         else:
             if form.validate_on_submit():
                 print(form.data)
@@ -455,6 +454,31 @@ def create_section(project_id, suite_id):
                                  user=user)
 
 
+# ------------------------------------ TEST CASE PAGE ------------------------------------------- #
+@app.route(rule='/projects/project/<int:project_id>/test-suites/<int:suite_id>/test-case/<int:testcase_id>', methods=['GET', 'POST'])
+@login_required
+def view_test_case(project_id, suite_id, testcase_id):
+    user = current_user.username
+    user_role = current_user.role_id
+
+    test_case = TestCases.query.filter_by(id=testcase_id, project_id=project_id, suite_id=suite_id).one()
+
+    print(test_case.test_case_title)
+
+    if user_role <= 3:
+        return flask.render_template(template_name_or_list='test_case_page.html',
+                                     project_id=project_id,
+                                    suite_id=suite_id,
+                                    testcase_id=testcase_id,
+                                    user=user,
+                                    test_case=test_case)
+    else:
+        return flask.render_template(template_name_or_list='test_case_page_edit.html',
+                                     project_id=project_id,
+                                    suite_id=suite_id,
+                                    testcase_id=testcase_id,
+                                    user=user,
+                                    test_case=test_case)
 
 # ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')
