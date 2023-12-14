@@ -159,6 +159,18 @@ class CreateNewSectionForm(FlaskForm):
     section_name = StringField(label="Section Name", validators=[DataRequired()])
     submit = SubmitField(label="Create Section")
 
+# ------------------------------------- TEST RUNS CLASSES --------------------------------------- #
+class TestRuns(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    test_run_name = db.Column(db.String(100), nullable=False)
+    test_suite_id = db.Column(db.Integer, nullable=False)
+    project_id = db.Column(db.Integer, nullable=False)
+    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+
+class CreateNewTestRun(FlaskForm):
+    test_run_name = StringField(label="Test Run Name", validators=[DataRequired()])
+    submit = SubmitField(label="Create Test Run")
+
 # ---------------------------------------- HOME PAGE -------------------------------------------- #
 @app.route(rule='/')
 def home_page():
@@ -479,6 +491,30 @@ def view_test_case(project_id, suite_id, testcase_id):
                                     testcase_id=testcase_id,
                                     user=user,
                                     test_case=test_case)
+
+# ------------------------------------ TEST RUNS PAGE ------------------------------------------- #
+@app.route(rule='/projects/project/<int:project_id>/test-runs')
+@login_required
+def test_runs(project_id):
+    user = current_user.username
+    project = Projects.query.filter_by(id=project_id).one()
+
+    test_runs_list = TestRuns.query.filter_by(project_id=project_id).all()
+
+    return flask.render_template(template_name_or_list='test_runs.html',
+                                 project=project,
+                                 project_id=project_id,
+                                 user=user,
+                                 test_runs_list=test_runs_list)
+
+
+# -------------------------------- CREATE TEST RUN PAGE ----------------------------------------- #
+@app.route(rule='/projects/project/<int:project_id>/test-runs/create-run', methods=['GET', 'POST'])
+@login_required
+def create_run(project_id):
+
+    return flask.render_template(template_name_or_list='create_run.html',
+                                 project_id=project_id)
 
 # ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')
