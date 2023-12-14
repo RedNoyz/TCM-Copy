@@ -45,11 +45,10 @@
                 <br>
             </div>
         </div>
-
         {% for item in test_runs_list %}
         <div class="content">
             <div class="card">
-                <hr>
+                <a href="">{{ item.test_run_name }}</a>
             </div>
         </div>
         {{ ckeditor.load() }}

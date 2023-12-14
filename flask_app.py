@@ -167,9 +167,19 @@ class TestRuns(db.Model):
     project_id = db.Column(db.Integer, nullable=False)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
-class CreateNewTestRun(FlaskForm):
+class CreateNewTestRunForm(FlaskForm):
     test_run_name = StringField(label="Test Run Name", validators=[DataRequired()])
+    test_suite_selection = SelectField(label="Select Test Suite",validators=[DataRequired()])
     submit = SubmitField(label="Create Test Run")
+
+class TestResults(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    test_case_id = db.Column(db.Integer, nullable=False)
+    test_status_id = db.Column(db.Integer, nullable=False)
+    test_run_id = db.Column(db.Integer, nullable=False)
+    test_suite_id = db.Column(db.Integer, nullable=False)
+    project_id = db.Column(db.Integer, nullable=False)
+    date_tested = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
 # ---------------------------------------- HOME PAGE -------------------------------------------- #
 @app.route(rule='/')
@@ -232,7 +242,7 @@ def sign_up():
 @login_required
 def logout():
 	logout_user()
-	flash("You Have Been Logged Out!  Thanks For Stopping By...")
+	flash("You Have Been Logged Out! Thanks For Stopping By...")
 	return redirect(url_for('home_page'))
 
 # ---------------------------------------- ADMIN PAGE ------------------------------------------- #
@@ -512,9 +522,45 @@ def test_runs(project_id):
 @app.route(rule='/projects/project/<int:project_id>/test-runs/create-run', methods=['GET', 'POST'])
 @login_required
 def create_run(project_id):
+    user = current_user.username
+    test_suites_list = TestSuites.query.filter_by(project_id=project_id).all()
+
+    form = CreateNewTestRunForm()
+
+    form.test_suite_selection.choices = [("-", "-")] + [(str(section.id), section.test_suites_name) for section in test_suites_list]
+    if request.method == 'POST':
+        try:
+            if form.validate_on_submit():
+                new_run = TestRuns(test_run_name=form.test_run_name.data,
+                                test_suite_id=form.test_suite_selection.data,
+                                project_id=project_id)
+                db.session.add(new_run)
+                db.session.commit()
+            
+
+                test_cases_list = TestCases.query.filter_by(project_id=project_id, suite_id=form.test_suite_selection.data).all()
+                print(test_cases_list)
+
+                test_run_id = TestRuns.query.filter_by(project_id=project_id).order_by(TestRuns.id.desc()).first()
+
+                for test_case in test_cases_list:
+                    result = TestResults(test_status_id=1,
+                                        test_case_id=test_case.id,
+                                        test_suite_id=form.test_suite_selection.data,
+                                        project_id=project_id,
+                                        test_run_id=test_run_id.id)
+                    db.session.add(result)
+                    db.session.commit()
+
+            return redirect(f'/projects/project/{project_id}/test-runs')
+        
+        except Exception as e:
+            print(f"Error: {str(e)}")
 
     return flask.render_template(template_name_or_list='create_run.html',
-                                 project_id=project_id)
+                                 project_id=project_id,
+                                 user=user,
+                                 form=form)
 
 # ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')
