@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,61 +10,63 @@
     <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
 
 </head>
+
 <body>
     {% extends 'base.html' %}
 
     {% block content %}
 
     {% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     {% endfor %}
 
     <div class="wrapper">
         <div class="wrapper">
-                <div class="content">
-                    <div class="card">
-                        <form method="POST">
+            <div class="content">
+                <div class="card">
+                    <form method="POST">
 
-                            {% for message in get_flashed_messages() %}
-	
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {% for message in get_flashed_messages() %}
+
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
+                        </div>
 
-                            {% endfor %}
+                        {% endfor %}
 
-                            {{ form.hidden_tag() }}
-                            <div class="form-floating mb-3">                        
-                                {{ form.username(class="form-control", id="floatingInput", placeholder="Username") }}
-                                <label for="floatingInput">Username</label>
-                            </div>
-                            <br/>
+                        {{ form.hidden_tag() }}
+                        <div class="form-floating mb-3">
+                            {{ form.username(class="form-control", id="floatingInput", placeholder="Username") }}
+                            <label for="floatingInput">Username</label>
+                        </div>
+                        <br />
 
-                            <div class="form-floating">                        
-                                {{ form.password(class="form-control", id="floatingPassword", placeholder="Password") }}
-                                <label for="floatingPassword">Password</label>
-                            </div>
-                            <br/>
-                    
-                            {{ form.submit(class="btn btn-secondary") }}
-                            <div class="d-grid gap-2">
-                                <a href="{{ url_for('home_page') }}" class="btn btn-danger btn-lg">Cancel</a>
-                            </div>
-                        </form>
-                    </div>
-                    {{ ckeditor.load() }}
- 	                {{ ckeditor.config(name='body') }}
+                        <div class="form-floating">
+                            {{ form.password(class="form-control", id="floatingPassword", placeholder="Password") }}
+                            <label for="floatingPassword">Password</label>
+                        </div>
+                        <br />
+
+                        {{ form.submit(class="btn btn-secondary") }}
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('home_page') }}" class="btn btn-danger btn-lg">Cancel</a>
+                        </div>
+                    </form>
                 </div>
+                {{ ckeditor.load() }}
+                {{ ckeditor.config(name='body') }}
+            </div>
         </div>
-    {% endblock %}
-    <footer>
-        <p>© Copyright {{ year }}. Built by RedNoyz.</p>
-    </footer>
+        {% endblock %}
+        <footer>
+            <p>© Copyright {{ year }}. Built by RedNoyz.</p>
+        </footer>
 </body>
+
 </html>

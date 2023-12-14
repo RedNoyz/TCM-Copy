@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +10,7 @@
     <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
 
 </head>
+
 <body>
     {% extends 'base.html' %}
 
@@ -17,30 +19,31 @@
 
 
     {% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     {% endfor %}
-    
+
     <div class="wrapper">
         {% for item in project_list %}
-            <div class="content">
-                <div class="card">
-                    <!-- <h2>{{ item['project_name'] }}</h2> -->
-                    <a href="{{ url_for('project', project_id=item['id']) }}">{{ item['project_name'] }}</a>
-                    <hr>
-                </div>
+        <div class="content">
+            <div class="card">
+                <!-- <h2>{{ item['project_name'] }}</h2> -->
+                <a href="{{ url_for('project', project_id=item['id']) }}">{{ item['project_name'] }}</a>
+                <hr>
             </div>
-            {{ ckeditor.load() }}
-            {{ ckeditor.config(name='body') }}
-            {% endfor %}
+        </div>
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='body') }}
+        {% endfor %}
     </div>
     {% endblock %}
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
     </footer>
 </body>
+
 </html>

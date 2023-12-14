@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +10,7 @@
     <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
 
 </head>
+
 <body>
     {% extends 'base.html' %}
 
@@ -22,44 +24,49 @@
     </div>
 
     {% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     {% endfor %}
-    
+
     <div class="wrapper">
 
-            <div class="content">
-                <div class="card">
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <a class="btn btn-secondary btn-lg" href="{{ url_for('create_suite', project_id=project_id) }}">Create Test Suite</a>
-                        <a class="btn btn-secondary btn-lg" href="{{ url_for('create_feature', project_id=project_id) }}">Create Feature Entry</a>
-                    </div>
-                    <br>
-                    <h1>{{ project['project_name'] }}</h1>
-                    <br>
+        <div class="content">
+            <div class="card">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-secondary btn-lg"
+                        href="{{ url_for('create_suite', project_id=project_id) }}">Create Test Suite</a>
+                    <a class="btn btn-secondary btn-lg"
+                        href="{{ url_for('create_feature', project_id=project_id) }}">Create Feature Entry</a>
                 </div>
+                <br>
+                <h1>{{ project['project_name'] }}</h1>
+                <br>
             </div>
+        </div>
 
         {% for item in test_suites_list %}
-            <div class="content">
-                <div class="card">
-                    <h3><a href="{{ url_for('test_suite_page', project_id=project_id, suite_id=item['id']) }}">{{ item['test_suites_name'] }}</a></h3>
-                    <h2>{{ item['test_suites_description'] }}</h2>
+        <div class="content">
+            <div class="card">
+                <h3><a
+                        href="{{ url_for('test_suite_page', project_id=project_id, suite_id=item['id']) }}">{{ item['test_suites_name'] }}</a>
+                </h3>
+                <h2>{{ item['test_suites_description'] }}</h2>
 
-                    <hr>
-                </div>
+                <hr>
             </div>
-            {{ ckeditor.load() }}
-            {{ ckeditor.config(name='body') }}
-            {% endfor %}
+        </div>
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='body') }}
+        {% endfor %}
     </div>
     {% endblock %}
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
     </footer>
 </body>
+
 </html>

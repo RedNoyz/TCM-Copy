@@ -1,37 +1,42 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>RedNoyz Socials</title>
-		<meta charset="utf-8" />
-		<link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/socials-css/style.css') }}" />
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/font-awesome.min.css') }}" />
-	</head>
-	<body class="loading">
-			<div id="container">
-					<section id="main">
-							<span class="avatar"><img src="{{ url_for('static',filename='styles/images/avatar.jpeg') }}" width="130" alt="" /></span>
-							<h1>Laurentiu Boboc</h1>
-							<h2><strong>RedNoyz</strong></h2>
-							<p>QA Architect</p>
-							<ul class="icons">
-								<li><a href="/" class="fa-book">Linkein</a></li>
-								<li><a href="https://github.com/RedNoyz" class="fa-brands fa-github">GitHub</a></li>
-								<li><a href="https://stackoverflow.com/users/19761952/rednoyz" class="fa-brands fa-stack-overflow">Stackoverflow</a></li>
-								<li><a href="https://www.linkedin.com/in/laurentiu-boboc-bb324393/" class="fa-brands fa-linkedin">Linkein</a></li>
 
-							</ul>
-					</section>
-			</div>
+<head>
+	<title>RedNoyz Socials</title>
+	<meta charset="utf-8" />
+	<link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/socials-css/style.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/font-awesome.min.css') }}" />
+</head>
 
-			<script>
-				if ('addEventListener' in window) {
-					window.addEventListener('load', function() 
-					{ 
-						document.body.className = document.body.className.replace(/\bloading\b/, ''); 
-					});
-				}
-			</script>
-	</body>
+<body class="loading">
+	<div id="container">
+		<section id="main">
+			<span class="avatar"><img src="{{ url_for('static',filename='styles/images/avatar.jpeg') }}" width="130"
+					alt="" /></span>
+			<h1>Laurentiu Boboc</h1>
+			<h2><strong>RedNoyz</strong></h2>
+			<p>QA Architect</p>
+			<ul class="icons">
+				<li><a href="/" class="fa-book">Linkein</a></li>
+				<li><a href="https://github.com/RedNoyz" class="fa-brands fa-github">GitHub</a></li>
+				<li><a href="https://stackoverflow.com/users/19761952/rednoyz"
+						class="fa-brands fa-stack-overflow">Stackoverflow</a></li>
+				<li><a href="https://www.linkedin.com/in/laurentiu-boboc-bb324393/"
+						class="fa-brands fa-linkedin">Linkein</a></li>
+
+			</ul>
+		</section>
+	</div>
+
+	<script>
+		if ('addEventListener' in window) {
+			window.addEventListener('load', function () {
+				document.body.className = document.body.className.replace(/\bloading\b/, '');
+			});
+		}
+	</script>
+</body>
+
 </html>

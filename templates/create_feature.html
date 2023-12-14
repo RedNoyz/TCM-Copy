@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +10,7 @@
     <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
 
 </head>
+
 <body>
 
     {% extends 'base.html' %}
@@ -16,41 +18,44 @@
     {% block content %}
 
     {% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     {% endfor %}
 
     <div class="wrapper">
         <div class="wrapper">
-                <div class="content">
-                    <div class="card">
-                        <form method="POST">
-                            {{ form.hidden_tag() }}
-                    
-                            <div class="form-floating mb-3">
-                                {{ form.feature(class="form-control", id="floatingInput", placeholder="Feature Name") }}
-                                <label for="floatingInput">Feature Name</label>
-                            </div>
+            <div class="content">
+                <div class="card">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <div class="form-floating mb-3">
+                            {{ form.feature(class="form-control", id="floatingInput", placeholder="Feature Name") }}
+                            <label for="floatingInput">Feature Name</label>
+                        </div>
 
 
-                            <br/>                            
-                            {{ form.submit(class="btn btn-secondary", onclick="location.href = {{ url_for('test_suite_page', project_id=project_id) }}" ) }}
-                            <div class="d-grid gap-2">
-                                <a class="btn btn-danger btn-lg" href="{{ url_for('test_suites', project_id=project_id, test_suite_id=suite_id) }}">Cancel</a>
-                            </div>
-                        </form>
-                    </div>
-                    {{ ckeditor.load() }}
- 	                {{ ckeditor.config(name='body') }}
+                        <br />
+                        {{ form.submit(class="btn btn-secondary", onclick="location.href = {{ url_for('test_suite_page', project_id=project_id) }}"
+                        ) }}
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-danger btn-lg"
+                                href="{{ url_for('test_suites', project_id=project_id, test_suite_id=suite_id) }}">Cancel</a>
+                        </div>
+                    </form>
                 </div>
+                {{ ckeditor.load() }}
+                {{ ckeditor.config(name='body') }}
+            </div>
         </div>
-    {% endblock %}
-    <footer>
-        <p>© Copyright {{ year }}. Built by RedNoyz.</p>
-    </footer>
+        {% endblock %}
+        <footer>
+            <p>© Copyright {{ year }}. Built by RedNoyz.</p>
+        </footer>
 </body>
+
 </html>

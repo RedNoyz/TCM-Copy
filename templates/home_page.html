@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,26 +10,27 @@
     <link rel="icon" href="{{ url_for('static',filename='styles/images/favicon.ico') }}">
 
 </head>
+
 <body>
     {% extends 'base.html' %}
 
     {% block content %}
 
     {% for message in get_flashed_messages() %}
-	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     {% endfor %}
 
     <div class="wrapper">
-            <div class="content">
-                <div class="card">
-                    <h1>WIP!! Coming Soon™</h1>
-                </div>
+        <div class="content">
+            <div class="card">
+                <h1>WIP!! Coming Soon™</h1>
             </div>
+        </div>
     </div>
     <footer>
         <p>© Copyright {{ year }}. Built by RedNoyz.</p>
@@ -36,4 +38,5 @@
 
     {% endblock %}
 </body>
+
 </html>
