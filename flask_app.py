@@ -536,7 +536,8 @@ def test_runs(project_id):
                                  user=user,
                                  test_runs_list=test_runs_list,
                                  test_results_count=test_results_count,
-                                 statuses_dic=statuses_dic)
+                                 statuses_dic=statuses_dic,
+                                 year=copyright_year)
 
 
 # -------------------------------- CREATE TEST RUN PAGE ----------------------------------------- #
@@ -582,6 +583,17 @@ def create_run(project_id):
                                  project_id=project_id,
                                  user=user,
                                  form=form)
+# ------------------------------------ TEST RUN PAGE -------------------------------------------- #
+@app.route(rule='/projects/project/<int:project_id>/test-runs/<int:test_run_id>', methods=['GET', 'POST'])
+@login_required
+def test_run_page(project_id, test_run_id):
+    user = current_user.username
+
+    return flask.render_template(template_name_or_list='test_run_page.html',
+                                 project_id=project_id,
+                                 test_run_id=test_run_id,
+                                 user=user,
+                                 year=copyright_year)
 
 # ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')
