@@ -4,6 +4,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_bcrypt import Bcrypt
 import time
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from datetime import datetime
 import sshtunnel
 from flask_wtf import FlaskForm
@@ -180,6 +181,10 @@ class TestResults(db.Model):
     test_suite_id = db.Column(db.Integer, nullable=False)
     project_id = db.Column(db.Integer, nullable=False)
     date_tested = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+
+class Statuses(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    status_name = db.Column(db.String(100), nullable=False)
 
 # ---------------------------------------- HOME PAGE -------------------------------------------- #
 @app.route(rule='/')
@@ -509,13 +514,29 @@ def test_runs(project_id):
     user = current_user.username
     project = Projects.query.filter_by(id=project_id).one()
 
-    test_runs_list = TestRuns.query.filter_by(project_id=project_id).all()
+    test_runs_list = TestRuns.query.filter_by(project_id=project_id).order_by(TestRuns.id.desc()).all()
+
+    test_results_count = db.session.query(
+            TestResults.test_run_id,
+            TestResults.test_status_id,
+            func.count().label('count')
+        ).group_by(
+            TestResults.test_run_id,
+            TestResults.test_status_id
+        ).all()
+  
+    statuses = Statuses.query.order_by(Statuses.id).all()
+    statuses_dic = {}
+    for item in statuses:
+        statuses_dic[item.id] = item.status_name
 
     return flask.render_template(template_name_or_list='test_runs.html',
                                  project=project,
                                  project_id=project_id,
                                  user=user,
-                                 test_runs_list=test_runs_list)
+                                 test_runs_list=test_runs_list,
+                                 test_results_count=test_results_count,
+                                 statuses_dic=statuses_dic)
 
 
 # -------------------------------- CREATE TEST RUN PAGE ----------------------------------------- #

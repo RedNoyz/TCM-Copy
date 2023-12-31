@@ -42,13 +42,30 @@
                 </div>
                 <br>
                 <h1>{{ project['project_name'] }}</h1>
+
                 <br>
             </div>
         </div>
         {% for item in test_runs_list %}
         <div class="content">
             <div class="card">
-                <a href="">{{ item.test_run_name }}</a>
+                <h3><a href="">{{ item.test_run_name }}</a></h3>
+                <hr>
+
+                <table border="1" class="table table-dark table-striped">
+                    <tr>
+                        <th>Status ID</th>
+                        <th>Count</th>
+                    </tr>
+                    {% for run_id, status_id, count in test_results_count if run_id == item.id %}
+                    <tr>
+
+                        <td>{{ statuses_dic[status_id] }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <p><strong>Run Started On: </strong>{{ item.created_date }}</p>
             </div>
         </div>
         {{ ckeditor.load() }}
