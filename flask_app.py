@@ -4,7 +4,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_bcrypt import Bcrypt
 import time
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from datetime import datetime
 import sshtunnel
 from flask_wtf import FlaskForm
@@ -12,6 +12,7 @@ from wtforms import PasswordField, StringField, SubmitField, SelectField, Select
 from wtforms.validators import DataRequired
 from flask_ckeditor import CKEditor
 from flask_ckeditor import CKEditorField
+import inflect
 
 
 app = Flask(import_name=__name__)
@@ -589,11 +590,30 @@ def create_run(project_id):
 def test_run_page(project_id, test_run_id):
     user = current_user.username
 
+    p = inflect.engine()
+    colapse_list = [f'collapse{p.number_to_words(i).capitalize()}'.replace("-", "").replace(" ", "") for i in range(1, 101)]
+
+    test_run = TestRuns.query.filter_by(id=test_run_id).one()
+    statuses = Statuses.query.order_by(Statuses.id).all()
+    statuses_dic = {}
+    for item in statuses:
+        statuses_dic[item.id] = item.status_name
+
+    joined_results = db.session.query(TestResults, TestCases).\
+    join(TestCases, and_(TestResults.test_suite_id == TestCases.suite_id, TestResults.test_case_id == TestCases
+                         .id)).\
+    filter(TestResults.test_run_id == test_run_id).\
+    group_by(TestResults.id).all()
+
     return flask.render_template(template_name_or_list='test_run_page.html',
                                  project_id=project_id,
                                  test_run_id=test_run_id,
                                  user=user,
-                                 year=copyright_year)
+                                 year=copyright_year,
+                                 statuses_dic=statuses_dic,                                 
+                                 colapse_list=colapse_list,
+                                 joined_results=joined_results,
+                                 test_run=test_run)
 
 # ------------------------------------ SOCIALS PAGE --------------------------------------------- #
 @app.route(rule='/socials')
